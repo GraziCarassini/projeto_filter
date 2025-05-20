@@ -4,7 +4,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = filter_input(INPUT_POST, "nome", FILTER_SANITIZE_SPECIAL_CHARS);
     $telefone = filter_input(INPUT_POST, "telefone", FILTER_SANITIZE_NUMBER_INT);
     $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
-    $senha = $_POST["senha"]; // senha não deve ser sanitizada diretamente
+    $senha = $_POST["senha"];
 
     $mensagens = [];
 
@@ -13,11 +13,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensagens[] = "❌ Nome muito curto.";
     }
 
+
     // Validação do telefone (números com 10 ou mais dígitos)
-    $telefoneNumerico = preg_replace('/\D/', '', $telefone);
-    if (strlen($telefoneNumerico) < 10) {
+    if (strlen(preg_replace('/\D/', '', $telefone)) < 10) {
         $mensagens[] = "❌ Telefone inválido.";
     }
+
 
     // Validação do e-mail
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -29,8 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensagens[] = "❌ A senha deve ter pelo menos 6 caracteres.";
     }
 
-    // Exibe resultado
-    $classe = empty($mensagens) ? "sucesso" : "erro";
+    // Resultado
+    $resultado = empty($mensagens) ? "sucesso" : "erro";
 
 } else {
     header("Location: index.php");
@@ -53,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         <h2>Resultado:</h2>
 
-        <?php if ($classe === "sucesso"): ?>
+        <?php if ($resultado === "sucesso"): ?>
             <p class="sucesso">✅ Cadastro realizado com sucesso!</p>
             <ul>
                 <li><strong>Nome:</strong> <?= htmlspecialchars($nome) ?></li>
